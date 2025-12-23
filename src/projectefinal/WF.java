@@ -9,46 +9,48 @@ package projectefinal;
  * @author Juan
  */
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 
-public class RF {
-
+public class WF { // Write File
     private MS filename;
-    private FileReader fileReader;
-    private BufferedReader reader;
+    private FileWriter fileWriter;
+    private BufferedWriter writer;
+    private final boolean append;
 
-    public RF(MS fname) {
+    public WF(MS fname) {
         filename = fname;
+        append = false;
+    }
+
+    public WF(MS fname, boolean appendMode) {
+        filename = fname;
+        append = appendMode;
     }
 
     public void open() {
         try {
-            fileReader = new FileReader(filename.toString());
-            reader = new BufferedReader(fileReader);
+            fileWriter = new FileWriter(filename.toString(), append);
+            writer = new BufferedWriter(fileWriter);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    public MS readLine() {
-        MS result = null;
+    public void writeLine(MS line) {
         try {
-            String line = reader.readLine();
-            if (line != null) {
-                result = new MS(line.toCharArray());
-            }
+            writer.write(line.toString());
+            writer.newLine();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return result;
     }
 
     public void close() {
         try {
-            if (reader != null) reader.close();
-            if (fileReader != null) fileReader.close();
+            if (writer != null) writer.close();
+            if (fileWriter != null) fileWriter.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }

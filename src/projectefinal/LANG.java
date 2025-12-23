@@ -11,12 +11,40 @@ package projectefinal;
 public class LANG {
     
     private char langCode;
+    private MS fDicc;
+    private MS fLlet;
+    private MS fCifr;
     
     public LANG(char idioma) {
         if (idioma == 'C' || idioma == 'E' || idioma == 'S') {
             langCode = idioma;
         } else {
             langCode = 'C';
+        }
+        
+        // Assignació dels fitxers segons l'idioma
+        setFiles();
+    }
+    
+    private void setFiles() {
+        
+        switch(langCode) {
+            
+            case 'S':
+                fDicc = new MS("files/dic_es.txt".toCharArray());
+                fLlet = new MS("files/letras_es.txt".toCharArray());
+                break;
+                
+            case 'C':
+                fDicc = new MS("files/dic_ca.txt".toCharArray());
+                fLlet = new MS("files/letras_ca.txt".toCharArray());
+                break;
+                
+            case 'E':
+                fDicc = new MS("files/dic_en.txt".toCharArray());
+                fLlet = new MS("files/letras_en.txt".toCharArray());
+                break;
+                
         }
     }
     
@@ -25,7 +53,7 @@ public class LANG {
             case 'C': System.out.print("Catalan"); break;
             case 'E': System.out.print("English"); break;
             case 'S': System.out.print("Spanish"); break;
-            
+            default: System.out.print("Catalan"); break;
         }
     }
     
@@ -33,5 +61,16 @@ public class LANG {
         return langCode;
     }
     
-}
+    public MS getDicc() {
+        return fDicc;
+    }
 
+    public MS getLletres() {
+        return fLlet;
+    }
+    
+    public MS getXifres() {
+        return fCifr;
+    }
+    
+}

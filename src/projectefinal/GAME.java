@@ -14,12 +14,10 @@ public class GAME {
     private LT lt = new LT();    
     
     // VARIABLES ///////////////////////////////////////////////////////////////
-    private MS p1;
+    private PLAYER player1;
+    private PLAYER cpu;
     private int roundNum;
     private LANG idioma;
-    private MS fDicc;
-    private MS fLlet;
-    private MS fCifr;
     
     // GAME CODE ///////////////////////////////////////////////////////////////
     public GAME() {
@@ -31,46 +29,25 @@ public class GAME {
     }
     
     private void init() {
-        setPlayerName();
+        setPlayers();
         setGameLang();
-        setDictionaries();
         setRoundNum();
-        
     }
     
-    private void setPlayerName() {
+    private void setPlayers() {
+        // Jugador Humà
         System.out.print("[+] Introdueix el teu nom: ");
-        char[] nomPlayer1 = lt.llegirLiniaC();
-        p1 = new MS(nomPlayer1);
-        // System.out.println(p1.toString());
+        char[] nomP1 = lt.llegirLiniaC();
+        player1 = new PLAYER(nomP1); // només nom, no pas boolean
+
+        // Jugador CPU
+        cpu = new PLAYER();
     }
     
     private void setGameLang() {
         System.out.print("\n[i] Selecciona l'idioma per jugar:\n\tE ) English\n\tS ) Spanish\n\tC ) Catalan\n[+] Introdueix una opcio: ");
         idioma = new LANG(lt.llegirCaracter());
         // idioma.getLang();
-    }
-    
-    private void setDictionaries() {
-        
-        switch(idioma.getCode()) {
-            
-            case 'S':
-                fDicc = new MS("files/dic_es.txt".toCharArray());
-                fLlet = new MS("files/letras_es.txt".toCharArray());
-                break;
-                
-            case 'C':
-                fDicc = new MS("files/dic_ca.txt".toCharArray());
-                fLlet = new MS("files/letras_ca.txt".toCharArray());
-                break;
-                
-            case 'E':
-                fDicc = new MS("files/dic_en.txt".toCharArray());
-                fLlet = new MS("files/letras_en.txt".toCharArray());
-                break;
-                
-        }
     }
     
     private void setRoundNum() {

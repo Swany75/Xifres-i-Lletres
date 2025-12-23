@@ -31,7 +31,7 @@ public class ProjecteFinal {
         (new ProjecteFinal()).run();
     }
     
-    public void run() {
+    private void run() {
         boolean primeraVegada = false;
         Character selection = ' ';
         
