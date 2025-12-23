@@ -70,6 +70,9 @@ public class ProjecteFinal {
                 
             }   
         }
+        lt.clearScreen();
+        System.out.println("[i] Fi del joc: Gracies per jugar!)");
+        
     }
     
     private void mainMenu() {

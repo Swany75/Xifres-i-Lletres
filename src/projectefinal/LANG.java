@@ -13,7 +13,7 @@ public class LANG {
     private char langCode;
     private MS fDicc;
     private MS fLlet;
-    private MS fCifr;
+    private MS fCifr = new MS("files/cifras.txt".toCharArray());
     
     public LANG(char idioma) {
         if (idioma == 'C' || idioma == 'E' || idioma == 'S') {
@@ -48,12 +48,13 @@ public class LANG {
         }
     }
     
+    /// GETTERS ////////////////////////////////////////////////////////////////
+    
     public void getLang() {
         switch (langCode) {
             case 'C': System.out.print("Catalan"); break;
             case 'E': System.out.print("English"); break;
             case 'S': System.out.print("Spanish"); break;
-            default: System.out.print("Catalan"); break;
         }
     }
     
@@ -71,6 +72,5 @@ public class LANG {
     
     public MS getXifres() {
         return fCifr;
-    }
-    
+    }    
 }

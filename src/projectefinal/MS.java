@@ -20,7 +20,7 @@ public class MS { // My String
         tamany = p.length;
     }
     
-    public void afegir(char c) {
+    public void add(char c) {
         if (tamany == characters.length) {
             char[] aux = new char[characters.length + 5];
         
@@ -34,9 +34,9 @@ public class MS { // My String
         characters[tamany++] = c;
     }
     
-    public void afegir(char[] fr) {
+    public void add(char[] fr) {
         for (int i = 0; i < fr.length; i++) {
-            afegir(fr[i]);
+            add(fr[i]);
         }
     }
     
@@ -48,6 +48,8 @@ public class MS { // My String
         return tamany;
     }
     
+    
+    // Metodes de transformació ////////////////////////////////////////////////
     
     public void toUpper() {
         for (int i = 0; i < tamany; i++) {
@@ -74,4 +76,87 @@ public class MS { // My String
         return res;
     }
     
+    /// Metodes Avançats de la classe MyString /////////////////////////////////
+    
+    public boolean isLetter(char c, char lang) {
+
+        switch (lang) {
+
+            case 'C': // Catalan
+                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) return true;
+                if (c == 'à' || c == 'è' || c == 'é' || c == 'í' || c == 'ò' || c == 'ó' || c == 'ú'
+                 || c == 'À' || c == 'È' || c == 'É' || c == 'Í' || c == 'Ò' || c == 'Ó' || c == 'Ú'
+                 || c == 'ç' || c == 'Ç') return true;
+                return false;
+
+            case 'S': // Spanish
+                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) return true;
+                if (c == 'á' || c == 'é' || c == 'í' || c == 'ó' || c == 'ú'
+                 || c == 'Á' || c == 'É' || c == 'Í' || c == 'Ó' || c == 'Ú'
+                 || c == 'ñ' || c == 'Ñ' || c == 'ü' || c == 'Ü') return true;
+                return false;
+
+            case 'E': // English
+                return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+
+            default:
+                return false;
+        }
+    }
+    
+    public MS[] split(char lang) {
+        MS[] res;
+        int compt = 0;
+        int p = 0;
+
+        // Comptar les paraules
+        while (p < getTam()) {
+            while (p < getTam() && !isLetter(get(p), lang)) {
+                p++;
+            }
+            if (p < getTam() && isLetter(get(p), lang)) {
+                while (p < getTam() && isLetter(get(p), lang)) {
+                    p++;
+                }
+                compt++;
+            }
+        }
+
+        res = new MS[compt];
+        compt = 0;
+        p = 0;
+
+        // Construir la paraula
+        while (p < getTam()) {
+            while (p < getTam() && !isLetter(get(p), lang)) {
+                p++;
+            }
+            if (p < getTam() && isLetter(get(p), lang)) {
+                res[compt] = new MS(new char[5]);
+                while (p < getTam() && isLetter(get(p), lang)) {
+                    res[compt].add(get(p));
+                    p++;
+                }
+                compt++;
+            }
+        }
+
+        return res;
+    }
+    
+    public static int[] cloneIntArray(int[] original) {
+        int[] copia = new int[original.length];
+        for (int i = 0; i < original.length; i++) {
+            copia[i] = original[i];
+        }
+        return copia;
+    }
+    
+    public static char[] cloneCharArray(char[] original) {
+        char[] copia = new char[original.length];
+        for (int i = 0; i < original.length; i++) {
+            copia[i] = original[i];
+        }
+        return copia;
+    }
 }
