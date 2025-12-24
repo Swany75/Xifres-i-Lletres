@@ -113,17 +113,16 @@ public class GAME {
     
     private int setDifficulty() {
         System.out.print("\n[i] Dificultat CPU"
-            + "\n\t 1) Facil"
-            + "\n\t 2) Normal"
-            + "\n\t 3) Dificil"
-            + "\n\t 4) Aleatori"
+            + "\n\t 1) Normal"
+            + "\n\t 2) Dificil"
+            + "\n\t 3) Aleatori"
             + "\n\n[+] Selecciona una opció: "
         );
         
         int res = lt.llegirSencer();
         
-        if (res == 4 || res < 1 || res > 3) {
-            res = random.nextInt(3) + 1;
+        if (res == 3 || res < 1 || res > 2) {
+            res = random.nextInt(2) + 1;
         }
         
         return res;

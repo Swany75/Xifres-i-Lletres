@@ -24,7 +24,9 @@ public class JX {
         int objectiu = generaObjectiu();
 
         tornJugadorXifres(xifres, objectiu, player1);
-
+        
+        lt.clearScreen();
+        
         if (player2.isCPU() == true) {
             tornCPUXifres(xifres, objectiu, player2);
         } else {
@@ -98,12 +100,7 @@ public class JX {
                     n2 = buscaMillor(n1, xifresPartida, objectiu - resultatRonda);
                     op = opInt(n1, n2, objectiu - resultatRonda);
                 }
-                case 3 -> {
-                    // DIFICIL
-                    if (contains(xifresPartida, n1)) xifresPartida = eliminarXifra(xifresPartida, n1);
-                    if (contains(xifresPartida, n2)) xifresPartida = eliminarXifra(xifresPartida, n2);
-                    op = opInt(n1, n2, objectiu - resultatRonda);
-                }
+
             }
 
             int resultat = aplicaOperacio(n1, op, n2);
