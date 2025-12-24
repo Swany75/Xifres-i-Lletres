@@ -30,20 +30,20 @@ public class LANG {
         
         switch(langCode) {
             
-            case 'S':
+            case 'S' -> {
                 fDicc = new MS("files/dic_es.txt".toCharArray());
                 fLlet = new MS("files/letras_es.txt".toCharArray());
-                break;
+            }
                 
-            case 'C':
+            case 'C' -> {
                 fDicc = new MS("files/dic_ca.txt".toCharArray());
                 fLlet = new MS("files/letras_ca.txt".toCharArray());
-                break;
+            }
                 
-            case 'E':
+            case 'E' -> {
                 fDicc = new MS("files/dic_en.txt".toCharArray());
                 fLlet = new MS("files/letras_en.txt".toCharArray());
-                break;
+            }
                 
         }
     }
@@ -52,9 +52,9 @@ public class LANG {
     
     public void getLang() {
         switch (langCode) {
-            case 'C': System.out.print("Catalan"); break;
-            case 'E': System.out.print("English"); break;
-            case 'S': System.out.print("Spanish"); break;
+            case 'C' -> System.out.print("Catalan");
+            case 'E' -> System.out.print("English");
+            case 'S' -> System.out.print("Spanish");
         }
     }
     

@@ -15,10 +15,12 @@ public class GAME {
     // Classes /////////////////////////////////////////////////////////////////
     private LT lt = new LT();    
     private Random random = new Random();
+    private JX jocXifres = new JX();
+    private JL jocLletres = new JL();
     
     // VARIABLES ///////////////////////////////////////////////////////////////
     private PLAYER player1;
-    private PLAYER cpu;
+    private PLAYER player2;
     private int roundNum;
     private LANG idioma;
     private int partidaActual = 0;
@@ -36,7 +38,7 @@ public class GAME {
             lt.clearScreen();
             
             // Ronda Xifres
-            rondaXifres();
+            jocXifres.rondaXifres(player1, player2, idioma);
             
             // Ronda Lletres
             
@@ -60,13 +62,35 @@ public class GAME {
     // Els setters estableixen valors
     
     private void setPlayers() {
-        // Jugador Humà
-        System.out.print("[+] Introdueix el teu nom: ");
-        char[] nomP1 = lt.llegirLiniaC();
-        player1 = new PLAYER(nomP1); // només nom, no pas boolean
+        
+        System.out.print("[+] Tria el numero de jugadors: ");
+        int playerNum = lt.llegirSencer();
+        
+        if (playerNum == 1) {
+            // Jugador Humà
+            char[] nomP1 = askPlayerName();
+            player1 = new PLAYER(nomP1);
 
-        // Jugador CPU
-        cpu = new PLAYER();
+            // Jugador CPU
+            int mode = setDifficulty();
+            player2 = new PLAYER(mode);
+                       
+        } else if (playerNum == 2) {
+            // Jugador 1
+            char[] nomP1 = askPlayerName();
+            player1 = new PLAYER(nomP1);
+            
+            // Jugador 2
+            char[] nomP2 = askPlayerName();
+            player2 = new PLAYER(nomP2);
+        }
+        
+    }
+    
+    private char[] askPlayerName() {
+        System.out.print("[+] Introdueix el teu nom: ");
+        char[] name = lt.llegirLiniaC();
+        return name;
     }
     
     private void setGameLang() {
@@ -86,112 +110,34 @@ public class GAME {
             roundNum = 1;
         }
     }
-   
     
-    /// RONDA XIFRES ///////////////////////////////////////////////////////////
-    
-    private void rondaXifres() {
-        RF file = new RF(idioma.getXifres());
-        int[] xifres = llegirXifres(file);
-        int objectiu = generaObjectiu();
+    private int setDifficulty() {
+        System.out.print("\n[i] Dificultat CPU"
+            + "\n\t 1) Facil"
+            + "\n\t 2) Normal"
+            + "\n\t 3) Dificil"
+            + "\n\t 4) Aleatori"
+            + "\n\n[+] Selecciona una opció: "
+        );
         
-        tornJugadorXifres(xifres, objectiu, player1);
-        tornCPUXifres(xifres, objectiu, cpu);
-    }
-    
-    private int[] llegirXifres(RF fitxer) {
-        fitxer.open();
-        MS line = fitxer.readLine();
-        fitxer.close();
+        int res = lt.llegirSencer();
         
-        int count = 1;
-        for (int i = 0; i < line.getTam(); i++) {
-            if (line.get(i) == ' ') count++;
+        if (res == 4 || res < 1 || res > 3) {
+            res = random.nextInt(3) + 1;
         }
         
-        int[] xifres = new int[count];
-        
-        int numIndex = 0;
-        int valor = 0;
-        for (int i = 0; i < line.getTam(); i++) {
-            char c = line.get(i);
-        
-            if (c >= '0' && c <= '9') {
-                valor = valor * 10 + (c - '0');
-            
-            } else if (c == ' ') {
-                xifres[numIndex++] = valor;
-                valor = 0;
-                
-            }
-            
-        }
-        
-        xifres[numIndex] = valor;        
-        return xifres;
-    }
-    
-    private void mostraXifres(int[] xifres) {
-        for (int i = 0; i < xifres.length; i++) {
-            System.out.print(xifres[i] + " ");
-        }
-    }
-    
-    private void tornJugadorXifres(int[] xifres, int objectiu, PLAYER p) {
-        char operacio = ' ';
-        System.out.println("[+] Torn de: " + player1.getName());
-        
-        int[] xifresPartida = getXifresPartida(xifres); 
-        
-        while (operacio != '=') {
-            System.out.print("\n[i] Xifres disponibles: ");
-            mostraXifres(xifresPartida);
-            
-            System.out.println("\n[*] Objectiu: " + objectiu
-                + "\n\t· Operacions disponibles: (+|-|*|/|=)"
-            );
-            System.out.print("Selecciona una operació: ");
-            operacio = lt.llegirCaracter();
-        }
-        
-        lt.ptc();
-    }
-
-    private void tornCPUXifres(int[] xifres, int objectiu, PLAYER cpu) {
-        System.out.println("[+] Torn de: CPU");
-    }
-
-    private boolean esOpValida(char c) {
-        return c == '+' || c == '-' || c == '*' || c == '/' || c == '=';
-    }
-    
-    private int[] getXifresPartida(int[] original) {
-        int[] res = new int[6];
-        int[] copia = MS.cloneIntArray(original);
-        int mida = copia.length;
-
-        for (int i = 0; i < 6; i++) {
-            int idx = random.nextInt(mida);
-            res[i] = copia[idx];
-
-            copia[idx] = copia[mida - 1];
-            mida--;
-        }
-
         return res;
     }
     
-    private int generaObjectiu() {
-        return 100 + random.nextInt(900);
-    }
-    
-    /// METODES GENERALS ///////////////////////////////////////////////////////
-    
     private void showScore() {
+        
+        double minuts = gameTime / 60000.0;
+        minuts = (int)(minuts * 100) / 100.0;
+        
         System.out.print("\n\n### Resultats #######################################"
-            + "\n[+] Jugador " + player1.getName() + " te: " + player1.getScore() + " punts"
-            + "\n[-] Jugador CPU te: " + cpu.getScore() + " punts"
-            + "\n[i] La partida ha durat: " + gameTime + " milisegons"
+            + "\n[+] Jugador 1 " + player1.getName() + " te: " + player1.getScore() + " punts"
+            + "\n[-] Jugador 2 " + player2.getName() + " te: " + player2.getScore() + " punts"
+            + "\n[i] La partida ha durat: " + minuts + " minuts"
         );
         
         lt.ptc();
@@ -204,4 +150,5 @@ public class GAME {
         gameTime = endTime - startTime;
         showScore();
     }
+    
 }

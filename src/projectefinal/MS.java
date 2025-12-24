@@ -144,6 +144,8 @@ public class MS { // My String
         return res;
     }
     
+    /// Clone Arrays ///////////////////////////////////////////////////////////
+    
     public static int[] cloneIntArray(int[] original) {
         int[] copia = new int[original.length];
         for (int i = 0; i < original.length; i++) {

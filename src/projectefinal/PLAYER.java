@@ -14,6 +14,7 @@ public class PLAYER {
     private MS name;
     private int score;
     private boolean cpu;
+    private int mode;
     
     // Constructor per jugador humà
     public PLAYER(char[] nom) {
@@ -23,10 +24,11 @@ public class PLAYER {
     }
     
     // Constructor per CPU
-    public PLAYER() {
+    public PLAYER(int difficulty) {
         this.name = new MS("CPU".toCharArray());
         this.score = 0;
         this.cpu = true;
+        this.mode = difficulty;
     }
     
     public MS getName() {
@@ -41,6 +43,10 @@ public class PLAYER {
         return cpu;
     }
     
+    public int getDifficulty() {
+        return mode;
+    }
+    
     // Mètode per sumar punts
     public void addScore(int pts) {
         score += pts;
@@ -49,4 +55,5 @@ public class PLAYER {
     public void resetScore() {
         score = 0;
     }
+    
 }

@@ -71,7 +71,7 @@ public class ProjecteFinal {
             }   
         }
         lt.clearScreen();
-        System.out.println("[i] Fi del joc: Gracies per jugar!)");
+        System.out.println("[*] Fi del joc: Gracies per jugar!\n[i] Repositori official: https://github.com/Swany75/Xifres-i-Lletres");
         
     }
     

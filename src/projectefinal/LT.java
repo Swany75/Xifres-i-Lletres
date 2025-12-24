@@ -30,7 +30,6 @@ public class LT { // Lectura Teclat i Clear Screen :)
         // no cal fer res amb buffer, només esperàvem ENTER
         System.out.println();
     }
-
     
     public char[] llegirLiniaC() {
         String res = "";
