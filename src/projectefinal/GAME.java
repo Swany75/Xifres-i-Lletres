@@ -24,9 +24,9 @@ public class GAME {
     private int roundNum;
     private LANG idioma;
     private int partidaActual = 0;
-    private long gameTime;
-    private long startTime;
-    private long endTime;
+    private double gameTime;
+    private double startTime;
+    private double endTime;
     
     // GAME CODE ///////////////////////////////////////////////////////////////
     public GAME() {
@@ -38,14 +38,21 @@ public class GAME {
             lt.clearScreen();
             
             // Ronda Xifres
-            jocXifres.rondaXifres(player1, player2, idioma);
+            jocXifres.rondaXifres(player1, player2, idioma); 
+            // Aqui pasam la classe idioma perque hi gestionam els fitxers, tambe gestionam el de xifres, encara que sigui sempre el mateix
+            
+            lt.clearScreen();
             
             // Ronda Lletres
+            jocLletres.rondaLletres(player1, player2, idioma);
+            // Aqui neccesitam saber si o si l'idioma
             
             partidaActual++;
         }
         
-        finalMethod();
+        calcTime();
+        REG.guardarPartida(player1, player2, roundNum, idioma, gameTime);
+        showScore();
         
     }
     
@@ -130,24 +137,33 @@ public class GAME {
     
     private void showScore() {
         
-        double minuts = gameTime / 60000.0;
-        minuts = (int)(minuts * 100) / 100.0;
-        
         System.out.print("\n\n### Resultats #######################################"
             + "\n[+] Jugador 1 " + player1.getName() + " te: " + player1.getScore() + " punts"
             + "\n[-] Jugador 2 " + player2.getName() + " te: " + player2.getScore() + " punts"
-            + "\n[i] La partida ha durat: " + minuts + " minuts"
+            + "\n[i] La partida ha durat: " + gameTime + " minuts"
         );
+        
+        guanyador(player1, player2);
         
         lt.ptc();
     }
     
+    private void guanyador(PLAYER player1, PLAYER player2) {
+        if (player1.getScore() > player2.getScore()) {
+            System.out.println("\n[^] El guanyador es: " + player1.getName());
+        } else if (player1.getScore() < player2.getScore()) {
+            System.out.println("\n[^] El guanyador es: " + player2.getName());
+        } else {
+            System.out.println("\n[^] Hi ha hagut un empat...");
+        }
+    }
+    
+    
     /// FINAL //////////////////////////////////////////////////////////////////
     
-    private void finalMethod() {
+    private void calcTime() {        
         endTime = System.currentTimeMillis();
-        gameTime = endTime - startTime;
-        showScore();
+        gameTime = Math.round(((endTime - startTime) / 60000.0) * 100) / 100.0;
     }
     
 }

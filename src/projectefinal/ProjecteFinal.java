@@ -60,7 +60,9 @@ public class ProjecteFinal {
                 GAME partida = new GAME();
             
             } else if (selection == 'r' || selection == 'R') {
-                System.out.println("[i] Mostrant el registre de partides");
+                lt.clearScreen(); 
+                REG.showPartides();
+                lt.ptc();
                 
             } else if (selection == 'q' || selection == 'Q') {
                 System.out.println("[i] Has sortit correctament del programa");

@@ -60,7 +60,7 @@ public class JX {
             int n2 = llegirNumero(xifresPartida);
             xifresPartida = eliminarXifra(xifresPartida, n2);
 
-            int resultat = aplicaOperacio(n1, operacio, n2);
+            int resultat = calcula(n1, operacio, n2);
             System.out.println("[i] Resultat operació: " + resultat);
 
             xifresPartida = actualitzaResultat(xifresPartida, resultat);
@@ -68,7 +68,7 @@ public class JX {
         }
 
         // Comprovam el Score amb valor absolut, per evitar numeros negatius
-        int score = checkScore(Math.abs(resultatRonda - objectiu));
+        int score = checkScore(objectiu - resultatRonda);
         p.addScore(score);
 
         System.out.println("[i] Resultat final de la ronda: " + resultatRonda);
@@ -81,6 +81,12 @@ public class JX {
         int resultatRonda = 0;
 
         System.out.println("[+] Torn de: CPU");
+        System.out.println("[.] Objectiu: " + objectiu);
+        System.out.print("\n[i] Xifres: ");
+        mostraXifres(xifresPartida);
+        System.out.println();
+        
+        
         int dificultat = cpu.getDifficulty();
 
         for (int ronda = 0; ronda < 5; ronda++) {
@@ -91,33 +97,36 @@ public class JX {
                 case 1 -> {
                     // FACIL
                     n1 = xifresPartida[random.nextInt(xifresPartida.length)];
+                    xifresPartida = eliminarXifra(xifresPartida, n1);
+
                     n2 = xifresPartida[random.nextInt(xifresPartida.length)];
                     op = randomOp();
                 }
                 case 2 -> {
                     // NORMAL
                     n1 = xifresPartida[random.nextInt(xifresPartida.length)];
-                    n2 = buscaMillor(n1, xifresPartida, objectiu - resultatRonda);
-                    op = opInt(n1, n2, objectiu - resultatRonda);
+                    xifresPartida = eliminarXifra(xifresPartida, n1);
+                    
+                    n2 = buscaMillor(n1, xifresPartida, objectiu, resultatRonda);
+                    op = opInt(n1, n2, objectiu, resultatRonda);
                 }
 
             }
+            System.out.print("\n[i] Xifres: ");
+            mostraXifres(xifresPartida);
+            System.out.println();
+            int resultat = calcula(n1, op, n2);
+            System.out.println("[*] " + n1 + " " + op + " " + n2 + " = " + resultat);
 
-            int resultat = aplicaOperacio(n1, op, n2);
-            System.out.println("[CPU] " + n1 + " " + op + " " + n2 + " = " + resultat);
-
-            xifresPartida = eliminarXifra(xifresPartida, n1);
             xifresPartida = eliminarXifra(xifresPartida, n2);
             xifresPartida = actualitzaResultat(xifresPartida, resultat);
 
             resultatRonda = resultat;
-            if (Math.abs(objectiu - resultatRonda) == 0) {
-                break;
-            }
+            if (objectiu == resultatRonda) break;
 
         }
 
-        int score = checkScore(Math.abs(objectiu - resultatRonda));
+        int score = checkScore(objectiu - resultatRonda);
         cpu.addScore(score);
         System.out.println("[i] Resultat final CPU: " + resultatRonda);
         lt.ptc();
@@ -235,23 +244,23 @@ public class JX {
         int count = 0;
         boolean trobat = false;
 
-        // Comptem quants elements tindrà l'array resultant
         for (int i = 0; i < arr.length; i++) {
             if (!trobat && arr[i] == valor) {
-                trobat = true; // només eliminem el primer que trobem
+                trobat = true;
                 continue;
             }
             count++;
         }
 
-        if (!trobat) return arr; // si no hi ha el valor, retornem l'original
+        if (!trobat) return arr;
 
         int[] res = new int[count];
         int idx = 0;
-        trobat = false; // reiniciem la bandera per omplir l'array
+        trobat = false;
+        
         for (int i = 0; i < arr.length; i++) {
             if (!trobat && arr[i] == valor) {
-                trobat = true; // saltem aquest element
+                trobat = true;
                 continue;
             }
             res[idx++] = arr[i];
@@ -261,22 +270,12 @@ public class JX {
     }
     
     private int[] actualitzaResultat(int[] arr, int resultat) {
-        int midaOriginal = 6;
-        if (arr.length <= midaOriginal) {
-            int[] res = new int[arr.length + 1];
-            for (int i = 0; i < arr.length; i++) {
-                res[i] = arr[i];
-            }
-            res[arr.length] = resultat;
-            return res;
-        } else {
-            arr[arr.length - 1] = resultat;
-            return arr;
+        int[] res = new int[arr.length + 1];
+        for (int i = 0; i < arr.length; i++) {
+            res[i] = arr[i];
         }
-    }
-
-    private int aplicaOperacio(int x, char op, int y) {
-        return calcula(x, op, y);
+        res[arr.length] = resultat;
+        return res;
     }
 
     private int calcula(int x, char op, int y) {
@@ -290,11 +289,10 @@ public class JX {
             case '*' ->
                 res = x * y;
             case '/' -> {
-                if (y != 0) {
+                if (y != 0 && x % y == 0) {
                     res = x / y;
                 } else {
-                    System.out.println("[!] Divisió per zero");
-                    res = 0;
+                    return 0; // invalida la operació
                 }
             }
         }
@@ -307,48 +305,57 @@ public class JX {
         return c == '+' || c == '-' || c == '*' || c == '/' || c == '=';
     }
 
-    private boolean contains(int[] arr, int valor) {
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == valor) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     // CPU /////////////////////////////////////////////////////////////////////
+    
     private char randomOp() {
         char[] ops = {'+', '-', '*', '/'};
         return ops[random.nextInt(4)];
     }
 
-    private int buscaMillor(int n1, int[] xifres, int diferència) {
+    private int buscaMillor(int n1, int[] xifres, int objectiu, int resultatRonda) {
         int millor = xifres[0];
-        int minDist = Math.abs(diferència - millor);
+        int millorDiff = 1000000; // Numero exageradament gran
+
         for (int i = 0; i < xifres.length; i++) {
-            int dist = Math.abs(diferència - xifres[i]);
-            if (dist < minDist) {
-                millor = xifres[i];
-                minDist = dist;
+            int n2 = xifres[i];
+            char[] ops = {'+', '-', '*', '/'};
+            
+            for (int j = 0; j < ops.length; j++) {
+                int r = calcula(n1, ops[j], n2);
+                if (r == 0 && ops[j] == '/') continue; // saltar divisió invalida
+
+                int diff = objectiu - resultatRonda - r;
+                if (diff < 0) diff = -diff;
+                
+                if (diff < millorDiff) {
+                    millorDiff = diff;
+                    millor = n2;
+                }
             }
         }
+
         return millor;
     }
 
-    private char opInt(int n1, int n2, int diferència) {
-        if (n1 + n2 <= diferència) {
-            return '+';
+    private char opInt(int n1, int n2, int objectiu, int resultatRonda) {
+        char millorOp = '+';
+        int millorDiff = 1000000;
+
+        char[] ops = {'+', '-', '*', '/'};
+        for (int i = 0; i < ops.length; i++) {
+            int r = calcula(n1, ops[i], n2);
+            if (r == 0 && ops[i] == '/') continue;
+
+            int diff = objectiu - resultatRonda - r;
+            if (diff < 0) diff = -diff;
+
+            if (diff < millorDiff) {
+                millorDiff = diff;
+                millorOp = ops[i];
+            }
         }
-        if (n1 - n2 >= 0) {
-            return '-';
-        }
-        if (n1 * n2 <= diferència) {
-            return '*';
-        }
-        if (n2 != 0) {
-            return '/';
-        }
-        return '+';
+
+        return millorOp;
     }
 
     /// METODES GENERALS ///////////////////////////////////////////////////////
