@@ -1,6 +1,5 @@
-
 # .github/workflows/java-ant-ci.yml
-name: Java CI (Ant)
+name: Java CI
 
 on:
   push:
@@ -16,11 +15,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java 11 (Temurin)
+      - name: Setup Java 24 (Temurin)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '11'
+          java-version: '24'      # <-- Cambiado a 24
 
       - name: Install Ant
         run: |
@@ -28,11 +27,8 @@ jobs:
           sudo apt-get install -y ant
           ant -version
 
-      # Si tu build.xml no está en la raíz, ajusta BUILD_FILE_PATH
       - name: Build with Ant
-        env:
-          BUILD_FILE_PATH: build.xml
         run: |
           echo "JAVA_HOME=$JAVA_HOME"
           java -version
-          ant -noinput -buildfile "$BUILD_FILE_PATH"
+          ant -noinput -buildfile build.xml
