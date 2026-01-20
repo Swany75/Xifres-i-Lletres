@@ -76,8 +76,7 @@ public class JL {
             System.out.println("[i] Longitud " + punts + ": +" + punts + " punts.");
         }
 
-        System.out.println("\n[i] Press ENTER to continue...");
-        lt.llegirLiniaC(); // pausa abans de continuar
+        lt.ptc();
     }
 
     /// TORN CPU
@@ -129,7 +128,7 @@ public class JL {
             totales[i] = lletresLine.get(i);
         }
 
-        // Seleccionem 10 lletres aleatòries
+        // Seleccionem 10 lletres random
         char[] bossa = new char[10];
         int mida = totales.length;
         for (int i = 0; i < 10; i++) {

@@ -10,6 +10,7 @@ import java.util.Random;
  *
  * @author Juan
  */
+
 public class JX {
 
     // Classes /////////////////////////////////////////////////////////////////
@@ -85,48 +86,65 @@ public class JX {
         System.out.print("\n[i] Xifres: ");
         mostraXifres(xifresPartida);
         System.out.println();
-        
-        
+
         int dificultat = cpu.getDifficulty();
 
         for (int ronda = 0; ronda < 5; ronda++) {
+            
+            if (xifresPartida.length < 2) {
+                break;
+            }
+            
             int n1 = 0, n2 = 0;
             char op = ' ';
 
+            // CPU escull números i operació segons dificultat
             switch (dificultat) {
-                case 1 -> {
-                    // FACIL
+                case 1 -> { // FACIL
                     n1 = xifresPartida[random.nextInt(xifresPartida.length)];
                     xifresPartida = eliminarXifra(xifresPartida, n1);
-
                     n2 = xifresPartida[random.nextInt(xifresPartida.length)];
                     op = randomOp();
                 }
-                case 2 -> {
-                    // NORMAL
+                case 2 -> { // NORMAL
                     n1 = xifresPartida[random.nextInt(xifresPartida.length)];
                     xifresPartida = eliminarXifra(xifresPartida, n1);
-                    
                     n2 = buscaMillor(n1, xifresPartida, objectiu, resultatRonda);
                     op = opInt(n1, n2, objectiu, resultatRonda);
                 }
-
+                case 3 -> { // DIFICIL
+                    int[] jugada = millorJugadaDificil(xifresPartida, objectiu, resultatRonda);
+                    n1 = jugada[0];
+                    n2 = jugada[1];
+                    op = (char) jugada[2];
+                }
             }
-            System.out.print("\n[i] Xifres: ");
-            mostraXifres(xifresPartida);
-            System.out.println();
+
+            System.out.println("[*] CPU escull: " + n1 + " " + op + " " + n2);
+
+            xifresPartida = eliminarXifra(xifresPartida, n1);
+            xifresPartida = eliminarXifra(xifresPartida, n2);
+
             int resultat = calcula(n1, op, n2);
             System.out.println("[*] " + n1 + " " + op + " " + n2 + " = " + resultat);
 
-            xifresPartida = eliminarXifra(xifresPartida, n2);
             xifresPartida = actualitzaResultat(xifresPartida, resultat);
-
             resultatRonda = resultat;
+
+            // Si la CPU aconsegueix l'objectiu, acabem la ronda
             if (objectiu == resultatRonda) break;
 
+            System.out.print("\n[i] Xifres restants: ");
+            mostraXifres(xifresPartida);
+            System.out.println();
         }
 
-        int score = checkScore(objectiu - resultatRonda);
+        int diff = objectiu - resultatRonda;
+        if (diff < 0) {
+            diff = -diff;
+        }
+        
+        int score = checkScore(diff);
         cpu.addScore(score);
         System.out.println("[i] Resultat final CPU: " + resultatRonda);
         lt.ptc();
@@ -339,7 +357,7 @@ public class JX {
 
     private char opInt(int n1, int n2, int objectiu, int resultatRonda) {
         char millorOp = '+';
-        int millorDiff = 1000000;
+        int millorDiff = 1000000; // Numero exageradament gran
 
         char[] ops = {'+', '-', '*', '/'};
         for (int i = 0; i < ops.length; i++) {
@@ -358,6 +376,51 @@ public class JX {
         return millorOp;
     }
 
+    private int[] millorJugadaDificil(int[] xifres, int objectiu, int resultatRonda) {
+        char[] ops = {'+', '-', '*', '/'};
+
+        int millorN1 = xifres[0];
+        int millorN2 = xifres[1];
+        char millorOp = '+';
+        int millorDiff = 1000000; // Numero exageradament gran
+
+        for (int i = 0; i < xifres.length; i++) {
+            
+            for (int j = 0; j < xifres.length; j++) {
+                if (i == j) continue;
+
+                int n1 = xifres[i];
+                int n2 = xifres[j];
+
+                for (char op : ops) {
+                    int r = calcula(n1, op, n2);
+
+                    // divisió invàlida
+                    if (op == '/' && r == 0) continue;
+
+                    int diff = objectiu - (resultatRonda + r);
+                    if (diff < 0) {
+                        diff = -diff;
+                    }
+
+                    if (diff < millorDiff) {
+                        millorDiff = diff;
+                        millorN1 = n1;
+                        millorN2 = n2;
+                        millorOp = op;
+                    }
+
+                    // solució perfecta
+                    if (diff == 0) {
+                        return new int[]{millorN1, millorN2, millorOp};
+                    }
+                }
+            }
+        }
+
+        return new int[]{millorN1, millorN2, millorOp};
+    }
+    
     /// METODES GENERALS ///////////////////////////////////////////////////////
     
     private int checkScore(int diff) {

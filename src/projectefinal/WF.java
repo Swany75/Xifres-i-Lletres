@@ -19,11 +19,6 @@ public class WF { // Write File
     private BufferedWriter writer;
     private final boolean append;
 
-    public WF(MS fname) {
-        filename = fname;
-        append = false;
-    }
-
     public WF(MS fname, boolean appendMode) {
         filename = fname;
         append = appendMode;
