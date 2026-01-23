@@ -68,7 +68,7 @@ Joc de Xifres i Lletres fet amb Java com a projecte final de l'assignatura Progr
 ## Restriccions respectades
 
 - No s’utilitzen estructures dinàmiques (`ArrayList`, `LinkedList`, etc.).
-- No s’utilitzen mètodes prohibits de `String` ni `Arrays`.
+- No s’utilitzen mètodes prohibits de `String` ni l'us de `Scanner`.
 - No s’utilitzen tècniques avançades no vistes a classe (recursivitat, backtracking, regex…).
 - No es carreguen fitxers grans completament en memòria.
 - Disseny orientat a objectes segons els criteris de l’assignatura.
